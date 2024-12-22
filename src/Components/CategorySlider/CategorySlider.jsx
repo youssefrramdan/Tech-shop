@@ -8,12 +8,15 @@ import { Audio } from 'react-loader-spinner';
 
 export default function CategorySlider() {
 
+  // Function to fetch categories
   function getCategories() {
-    return axios.get('https://ecommerce.routemisr.com/api/v1/categories');
+    return axios.get('https://gcm.onrender.com/api/categories');
   }
 
+  // Using React Query to fetch data
   const { data, isLoading } = useQuery('categorySlider', getCategories);
 
+  // Show loading spinner while fetching data
   if (isLoading) {
     return (
       <div className='d-flex vh-100 bg-primary bg-opacity-50 justify-content-center align-items-center'>
@@ -30,6 +33,7 @@ export default function CategorySlider() {
     );
   }
 
+  // Slider settings
   const settings = {
     dots: true,
     speed: 500,
@@ -40,7 +44,7 @@ export default function CategorySlider() {
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 1,
+          slidesToShow: 4,
           slidesToScroll: 1,
           infinite: true,
           dots: true
@@ -57,7 +61,7 @@ export default function CategorySlider() {
       {
         breakpoint: 480,
         settings: {
-          slidesToShow: 3,  // Show three photos on small screens
+          slidesToShow: 2,
           slidesToScroll: 1
         }
       }
@@ -66,19 +70,17 @@ export default function CategorySlider() {
 
   return (
     <Slider {...settings}>
-      {data.data.data.map((category, idx) =>
-        <div className="row" key={idx}>
-          <div className="col-md-12 gx-2 text-center py-3 px-0">
-            <img
-              style={{ height: '200px' }}
-              className="w-100 rounded-5 p-3 mx-3 my-3"
-              src={category.image}
-              alt={category.name}
-            />
-            <h4 className="text-center me-1 mt-2">{category.name}</h4>
-          </div>
+      {data?.data?.categories.map((category, idx) => (
+        <div key={idx} className="text-center">
+          <img
+            style={{ height: '150px' }}
+            className="w-100 rounded-5"
+            src={category.imageCover}
+            alt={category.name}
+          />
+          <h4 className="mt-2">{category.name}</h4>
         </div>
-      )}
+      ))}
     </Slider>
   );
 }
