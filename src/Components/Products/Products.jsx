@@ -31,11 +31,8 @@ export default function Products() {
   }
 
   async function getAllProducts() {
-<<<<<<< HEAD
-    return axios.get('https://ecommerce.routemisr.com/api/v1/products');
-=======
+
     return axios.get('https://gcm.onrender.com/api/products');
->>>>>>> e4f8d19 (Initial commit)
   }
 
   const { isLoading, data } = useQuery('getAllProducts', getAllProducts);

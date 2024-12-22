@@ -5,10 +5,6 @@ import { useQuery } from 'react-query'
 import { Audio } from 'react-loader-spinner'
 import emptyimg from '../../Assets/images/preview.png'
 
-<<<<<<< HEAD
-=======
-
->>>>>>> e4f8d19 (Initial commit)
 export default function AllOrders() {
   const [allOrders, setAllOrders] = useState([])
   console.log(allOrders);
