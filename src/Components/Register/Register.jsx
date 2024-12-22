@@ -16,7 +16,7 @@ export default function Register() {
     try {
       setIsLoading(true);
       const response = await axios.post(
-        `https://gcm.onrender.com/api/signup`,
+        `https://localhost:3000/api/auth/signup`,
         values
       );
 
