@@ -19,7 +19,7 @@ export default function Login() {
     setIsLoading(true); // Set loading to true during the API call
 
     try {
-      const res = await axios.post(`http://localhost:5713/api/auth/signin`, values);
+      const res = await axios.post(`https://gcm.onrender.com/api/signin`, values);
 
       if (res.data.message === 'Success login') {
         localStorage.setItem('userToken', res.data.token); // Save token to localStorage
