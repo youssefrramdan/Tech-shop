@@ -1,0 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Encode+Sans+Expanded:wght@300&display=swap');
+
+:root {
+    --main-color: #0aad0a;
+    --light-color: #f0f3f2;
+    --shadow: rgba(145, 158, 171, .2) 0px 2px 4px -1px, rgba(145, 158, 171, .14) 0px 4px 5px 0px, rgba(145, 158, 171, .12) 0px 1px 10px 0px;
+    --font-family: 'Encode Sans Expanded', sans-serif;
+    --rating-color: #ffc908;
+}
+
+body {
+    font-family: var(--font-family) !important;
+
+}
+
+.rating-color {
+    color: var(--rating-color);
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+a,
+a:hover {
+    color: black;
+    text-decoration: none;
+}
+
+
+.products .col-md-2 {
+    border: 1px solid transparent;
+    transition: border 1s;
+}
+
+.products .col-md-2:hover {
+    box-shadow: var(--shadow);
+    border: 1px solid var(--main-color);
+}
+
+.row .col-md-3 {
+    border: 1px solid transparent;
+    transition: border 1s;
+}
+
+.row .col-md-3:hover {
+    border: 1px solid var(--main-color);
+}
+
+/* .products .btn {
+    transition: transform .5s, opacity .5s;
+    transform: translateY(100%);
+    opacity: 0;
+}
+
+.products:hover .btn {
+    opacity: 1;
+    transform: translateY(0%);
+
+} */
+
+.font-sm {
+    font-size: 14px;
+}
+
+.text-main,
+.text-main .o {
+    color: var(--main-color);
+    font-size: 20px;
+}
+
+.bg-main {
+    background-color: var(--main-color) !important;
+}
+
+.bg-main-light {
+    background-color: var(--light-color) !important;
+}
+
+.products a {
+    text-decoration: none !important;
+    color: black !important;
+}
+
+.products .addCart {
+    transform: translateY(300%);
+    transition: 0.5s all;
+}
+
+.products .col-6:hover .addCart {
+    transform: translateY(0);
+}
+
+.sell {
+    background-color: rgb(230, 227, 227);
+}
+
+.products .btn-heart {
+    transform: translateY(-300%);
+    transition: 0.5s all;
+}
+
+.products .col-6:hover .btn-heart {
+    transform: translateY(0);
+}
+
+a #heart {
+    z-index: 999999999999999999;
+
+}
+
+.heart.added-to-wishlist {
+    color: red;
+}
+
+.paypal {
+    width: 60px;
+    height: 20px;
+}
+
+.footer {
+
+    background-color: rgb(230, 227, 227);
+
+}
+
+.ios {
+    height: 50px;
+    width: 121px;
+}
+
+.navbar .nav-link.active {
+    background-color: var(--main-color);
+    color: var(--light-color);
+    border-radius: 5px;
+    box-shadow: 0px 1px 10px 0px black;
+}
+
+.navbar .nav-link:hover {
+    background-color: var(--main-color);
+    color: var(--light-color);
+    border-radius: 5px;
+}
+
+.nav-link {
+    margin-left: 2px;
+}
+.svg{
+height: 70px;
+    width: 90px;
+    color: rgb(81, 41, 184);
+} 
