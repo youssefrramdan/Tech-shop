@@ -1,45 +1,62 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Audio } from 'react-loader-spinner';
 import { useQuery } from 'react-query';
 
 export default function Category() {
-  //const [categoryList, setCategory] = useState([])
+  // Function to fetch categories
   async function getCategory() {
-    return axios.get(`https://ecommerce.routemisr.com/api/v1/categories`);
-    
+    return axios.get('https://gcm.onrender.com/api/categories');
   }
-  const {isLoading , data} = useQuery('getCategory' , getCategory ) 
-  console.log(data);  
-  if (isLoading) {
-    return <div className='d-flex vh-100 bg-primary bg-opacity-50 justify-content-center align-items-center '>
-    <Audio
-      height="100"
-      width="100"
-      color="#4fa94d"
-      ariaLabel="audio-loading"
-      wrapperStyle={{}}
-      wrapperClass="wrapper-class"
-      visible={true}
-      />
-  </div>
- 
-}   
 
-  
-  return <>
-    <div className='container mt-2'>
-      <div className="row">
-    
-      {data.data.data.map((category , idx) => {
-        return <>
-          <div className="col-6 col-sm-4 col-md-3 col-lg-2 gy-1  rounded-3" key={idx}>
-            <img src={category.image} className='w-100' height={300} />
-            <h3 className='text-main text-center fw-bold m-2'>{category.name}</h3>
-          </div>
-        </>
-      })}
-  </div>
-    </div>
+  const { isLoading, data } = useQuery('getCategory', getCategory);
+
+  // Show loader while fetching data
+  if (isLoading) {
+    return (
+      <div className='d-flex vh-100 bg-primary bg-opacity-50 justify-content-center align-items-center'>
+        <Audio
+          height="100"
+          width="100"
+          color="#4fa94d"
+          ariaLabel="audio-loading"
+          visible={true}
+        />
+      </div>
+    );
+  }
+
+  // Check if data exists
+  const categories = data?.data?.categories || [];
+
+  return (
+    <>
+      <div className='container mt-4'>
+        <div className='row gy-4'>
+          {categories.map((category, idx) => (
+            <div key={category._id} className='col-6 col-sm-4 col-md-3 col-lg-2 text-center'>
+              {/* Display category image */}
+              {category.imageCover ? (
+                <img
+                  src={category.imageCover}
+                  alt={category.name}
+                  className='w-100 rounded'
+                  style={{ height: '200px', objectFit: 'cover' }}
+                />
+              ) : (
+                <div
+                  className='w-100 rounded bg-secondary d-flex align-items-center justify-content-center'
+                  style={{ height: '200px' }}
+                >
+                  No Image
+                </div>
+              )}
+              {/* Display category name */}
+              <h5 className='mt-3 text-truncate'>{category.name}</h5>
+            </div>
+          ))}
+        </div>
+      </div>
     </>
+  );
 }
