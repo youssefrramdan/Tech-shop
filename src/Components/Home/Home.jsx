@@ -26,12 +26,13 @@ export default function Products() {
   // Function to add a product to the Cart
   async function addProduct(id) {
     const res = await addProductTOCart(id);
-    if (res.status === 'success') {
+    if (res?.status === 'success') {
       toast.success('Added successfully', { duration: 1500, position: 'top-center' });
     } else {
-      toast.error('Error occurred', { duration: 1500, position: 'top-center' });
+      toast.error(`Error occurred: ${res?.message || "Unknown error"}`, { duration: 1500, position: 'top-center' });
     }
   }
+  
 
   // getAllProducts function to fetch data from the new API endpoint
   async function getAllProducts() {
