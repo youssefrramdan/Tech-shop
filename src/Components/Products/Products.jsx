@@ -1,122 +1,145 @@
 import { useState, useContext } from "react";
-import axios from "axios";
 import { Audio } from "react-loader-spinner";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { cartContext } from "../../Context/CartContext";
 import { WishListContext } from "../../Context/WishListContext";
+import "./Products.css";
 
 export default function Products() {
   const { addProductTOCart } = useContext(cartContext);
   const { addToWishList } = useContext(WishListContext);
   const [searchQuery, setSearchQuery] = useState("");
 
+  // إضافة المنتج إلى قائمة الرغبات
   async function productToWishList(id) {
-    const res = await addToWishList(id);
-    if (res.status === "success") {
-      toast.success("Added successfully to Wish List", { duration: 1000, position: "top-center" });
-    } else {
-      toast.error("Error occurred", { duration: 1500, position: "top-center" });
+    try {
+      const res = await addToWishList(id);
+      if (res.status === "success") {
+        toast.success("Added successfully to Wish List", { duration: 1000, position: "top-center" });
+      } else {
+        toast.error("Error occurred while adding to Wishlist", { duration: 1500, position: "top-center" });
+      }
+    } catch (error) {
+      toast.error("Unexpected error occurred", { duration: 1500, position: "top-center" });
     }
   }
 
+  // إضافة المنتج إلى السلة
   async function addProduct(id) {
-    const res = await addProductTOCart(id);
-    if (res.status === "success") {
-      toast.success("Added successfully", { duration: 1500, position: "top-center" });
-    } else {
-      toast.error("Error occurred", { duration: 1500, position: "top-center" });
+    try {
+      const res = await addProductTOCart(id);
+      if (res.status === "success") {
+        toast.success("Added successfully to Cart", { duration: 1500, position: "top-center" });
+      } else {
+        toast.error("Error occurred while adding to Cart", { duration: 1500, position: "top-center" });
+      }
+    } catch (error) {
+      toast.error("Unexpected error occurred", { duration: 1500, position: "top-center" });
     }
   }
 
+  // جلب جميع المنتجات
   async function getAllProducts() {
-    return axios.get("https://gcm.onrender.com/api/products");
+    const response = await fetch("https://gcm.onrender.com/api/products");
+    return response.json();
   }
 
-  const { isLoading, data } = useQuery("getAllProducts", getAllProducts);
+  const { isLoading, data, error } = useQuery("getAllProducts", getAllProducts);
 
   if (isLoading) {
     return (
-      <div className="d-flex vh-100 bg-primary bg-opacity-50 justify-content-center align-items-center">
-        <Audio height="100" width="100" color="#4fa94d" ariaLabel="audio-loading" visible={true} />
+      <div className="d-flex vh-100 bg-light justify-content-center align-items-center">
+      <div className="lds-ripple">
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="d-flex vh-100 bg-danger bg-opacity-50 justify-content-center align-items-center">
+        <h3 className="text-white">Failed to load products. Please try again later.</h3>
       </div>
     );
   }
 
-  const products = data?.data?.products || [];
-
+  const products = data?.products || [];
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
-    <div className="container mt-4">
+    <div className="container py-5">
+      {/* مربع البحث */}
       <div className="row mb-4">
         <div className="col">
           <input
             type="text"
-            className="form-control shadow border-black"
+            className="form-control shadow border-0"
             placeholder="Search for products..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
       </div>
-      <div className="container products mt-4">
-        <div className="row gy-4">
-          {filteredProducts.map((product, idx) => (
+
+      {/* قائمة المنتجات */}
+      <div className="row gy-4">
+        {filteredProducts.length === 0 ? (
+          <h4 className="text-center text-muted">No products found</h4>
+        ) : (
+          filteredProducts.map((product, idx) => (
             <div key={idx} className="col-12 col-sm-6 col-md-4 col-lg-3">
-              <div className="card h-100 shadow-sm position-relative">
+              <div className="product-card h-100 position-relative">
+                {/* حالة المنتج (In Stock أو Out of Stock) */}
+                <div className={`stock-indicator ${product.stock > 0 ? "in-stock" : "out-of-stock"}`}>
+                  {product.stock > 0 ? "In Stock" : "Out of Stock"}
+                </div>
+
                 <Link to={`/productdetails/${product._id}`} className="text-decoration-none text-dark">
-                  <img
-                    src={product.imageCover}
-                    className="card-img-top p-3"
-                    alt={product.name}
-                    style={{ height: "200px", objectFit: "contain" }}
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title text-center text-truncate" title={product.name}>
-                      {product.name}
-                    </h5>
-                    <p className="text-muted text-center mb-2">
-                      {product.category?.name || "No Category"}
-                    </p>
-                    <div className="d-flex justify-content-between align-items-center">
+                  <div className="product-image">
+                    <img src={product.imageCover} alt={product.name} />
+                  </div>
+                  <div className="product-info">
+                    <h5 className="text-center">{product.name}</h5>
+                    <div className="d-flex justify-content-between">
                       {product.priceAfterDiscount ? (
-                        <p className="m-0">
-                          <span className="text-decoration-line-through text-muted">
-                            {product.price} EGP
-                          </span>{" "}
+                        <>
+                          <span className="text-muted text-decoration-line-through">{product.price} EGP</span>
                           <span className="text-success">{product.priceAfterDiscount} EGP</span>
-                        </p>
+                        </>
                       ) : (
-                        <p className="m-0 text-primary">{product.price} EGP</p>
+                        <span>{product.price} EGP</span>
                       )}
-                      <p className="m-0">
-                        <span>Stock: {product.stock}</span>
-                      </p>
                     </div>
                   </div>
                 </Link>
-                <button
-                  onClick={() => productToWishList(product._id)}
-                  className="btn btn-light position-absolute top-0 end-0 m-2"
-                  title="Add to Wishlist"
-                >
-                  <i className="fa-regular fa-heart"></i>
-                </button>
-                <button
-                  onClick={() => addProduct(product._id)}
-                  className="btn btn-primary w-100 mt-2"
-                  disabled={product.stock === 0}
-                >
-                  {product.stock === 0 ? "Out of Stock" : "Add to Cart"}
-                </button>
+
+                {/* الأزرار */}
+                <div className="product-actions d-flex justify-content-around mt-3">
+                  <button
+                    onClick={() => addProduct(product._id)}
+                    className="btn btn-primary"
+                    disabled={product.stock === 0}
+                  >
+                    {product.stock === 0 ? "Out of Stock" : "Add to Cart"}
+                  </button>
+                  <button
+                    onClick={() => productToWishList(product._id)}
+                    className="btn btn-outline-danger"
+                  >
+                    <i className="fa fa-heart"></i>
+                  </button>
+                </div>
               </div>
             </div>
-          ))}
-        </div>
+          ))
+        )}
       </div>
     </div>
   );
