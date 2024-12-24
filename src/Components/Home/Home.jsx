@@ -25,7 +25,6 @@ export default function Home() {
         }
     }
 
-    // إضافة منتج إلى السلة
     async function addProduct(productId) {
         try {
             const res = await addProductToCart(productId);
@@ -39,7 +38,6 @@ export default function Home() {
         }
     }
 
-    // جلب المنتجات
     async function getAllProducts() {
         const response = await fetch("https://gcm.onrender.com/api/products");
         return response.json();
