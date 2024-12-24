@@ -1,112 +1,104 @@
-import React, { useContext } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import logo from "../../Assets/images/freshcart-logo.svg";
-import { UserContext } from '../../Context/UserContext';
-import { cartContext } from '../../Context/CartContext';
+import React, { useContext } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { FaLaptop } from "react-icons/fa"; // أيقونة TechSphere
+import { UserContext } from "../../Context/UserContext";
+import { cartContext } from "../../Context/CartContext";
+import "./Navbar.css";
 
 export default function Navbar() {
-  let { userToken, setUserToken, userData } = useContext(UserContext);
+  const { userToken, setUserToken, userData } = useContext(UserContext);
   const { numOfCartItems } = useContext(cartContext);
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   function Logout() {
-    localStorage.removeItem('userToken');
+    localStorage.removeItem("userToken");
     setUserToken(null);
-    navigate('/login');
+    navigate("/login");
   }
 
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary">
-      <div className="container-fluid">
-        <NavLink className="navbar-brand" to="/">
-          <img src={logo} className='svg ms-0' alt="logo" />
+    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
+      <div className="container">
+        <NavLink className="navbar-brand d-flex align-items-center" to="/">
+          <FaLaptop size={30} className="text-primary me-2" />
+          <span className="fw-bold text-primary">TechSphere</span>
         </NavLink>
         <button
           className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+        <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            {userToken !== null ? (
-              <>
-                <li className="nav-item">
-                  <NavLink className="nav-link" to="/" end>
-                    Home
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink className="nav-link" to="/products">
-                    Products
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink className="nav-link" to="/categories">
-                    Categories
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink className="nav-link" to="/brands">
-                    Brands
-                  </NavLink>
-                </li>
-                <li className="nav-item position-relative">
-                  <NavLink className="nav-link" to="/cart">
-                    Cart
-                  </NavLink>
-                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    {numOfCartItems ? numOfCartItems : ''}
-                  </span>
-                </li>
-                <li className="nav-item">
-                  <NavLink className="nav-link" to="/allorders">
-                    All Orders
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink className="nav-link" to="/wishlist">
-                    <i className="fa-regular fa-heart"></i>
-                  </NavLink>
-                </li>
-              </>
-            ) : (
-              ''
-            )}
-          </ul>
-          <ul className="navbar-nav ms-auto mb-5 mb-lg-0">
-            <li className="nav-item d-flex align-items-center">
-              <i className="fab fa-facebook mx-2"></i>
-              <i className="fab fa-twitter mx-2"></i>
-              <i className="fab fa-instagram mx-2"></i>
-              <i className="fab fa-tiktok mx-2"></i>
-              <i className="fab fa-youtube mx-2"></i>
+            <li className="nav-item">
+              <NavLink className="nav-link text-dark" to="/" end>
+                Home
+              </NavLink>
             </li>
-            {userToken !== null ? (
+            <li className="nav-item">
+              <NavLink className="nav-link text-dark" to="/products">
+                Products
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link text-dark" to="/categories">
+                Categories
+              </NavLink>
+            </li>
+            <li className="nav-item position-relative">
+              <NavLink className="nav-link text-dark" to="/cart">
+                Cart
+              </NavLink>
+              {numOfCartItems > 0 && (
+                <span className="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-pill">
+                  {numOfCartItems}
+                </span>
+              )}
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link text-dark" to="/allorders">
+                All Orders
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link text-dark" to="/wishlist">
+                Wishlist
+              </NavLink>
+            </li>
+          </ul>
+          <ul className="navbar-nav ms-auto">
+            {userToken ? (
               <>
-                <li className="nav-item mt-3 me-2">
-                  <p>Hi {userData?.name}</p>
+                <li className="nav-item">
+                  <span className="nav-link text-dark">Hi, {userData?.name}</span>
                 </li>
-                <li className="nav-item mt-2">
-                  <span onClick={Logout} className="nav-link cursor-pointer">
+                <li className="nav-item">
+                  <button
+                    onClick={Logout}
+                    className="btn btn-outline-primary ms-2"
+                  >
                     Logout
-                  </span>
+                  </button>
                 </li>
               </>
             ) : (
               <>
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="/login">
+                  <NavLink className="btn btn-primary text-white me-2" to="/login">
                     Login
                   </NavLink>
                 </li>
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="/register">
+                  <NavLink
+                    className="btn btn-outline-primary"
+                    to="/register"
+                  >
                     Register
                   </NavLink>
                 </li>
