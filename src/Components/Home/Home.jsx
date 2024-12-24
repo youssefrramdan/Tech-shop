@@ -6,7 +6,6 @@ import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import { FaHeart, FaShoppingCart } from "react-icons/fa";
 import toast from "react-hot-toast";
-import SimpleSlider from "../HomeSlider/HomeSlider"; // Import Hero Slider
 import CategorySlider from "../CategorySlider/CategorySlider"; // Import Category Slider
 
 export default function Home() {
@@ -52,8 +51,11 @@ export default function Home() {
     if (isLoading) {
         return (
             <div className="d-flex vh-100 bg-light justify-content-center align-items-center">
-                <Audio height="100" width="100" color="#007bff" ariaLabel="audio-loading" visible={true} />
+            <div className="lds-ripple">
+              <div></div>
+              <div></div>
             </div>
+          </div>
         );
     }
 

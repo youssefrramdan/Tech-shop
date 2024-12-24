@@ -8,7 +8,7 @@ import { WishListContext } from "../../Context/WishListContext";
 import "./Products.css";
 
 export default function Products() {
-  const { addProductTOCart } = useContext(cartContext);
+  const { addProductToCart } = useContext(cartContext); // تم تعديل اسم الدالة هنا
   const { addToWishList } = useContext(WishListContext);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -16,7 +16,7 @@ export default function Products() {
   async function productToWishList(id) {
     try {
       const res = await addToWishList(id);
-      if (res.status === "success") {
+      if (res?.status === "success") {
         toast.success("Added successfully to Wish List", { duration: 1000, position: "top-center" });
       } else {
         toast.error("Error occurred while adding to Wishlist", { duration: 1500, position: "top-center" });
@@ -27,10 +27,10 @@ export default function Products() {
   }
 
   // إضافة المنتج إلى السلة
-  async function addProduct(id) {
+  async function addProduct(productId) {
     try {
-      const res = await addProductTOCart(id);
-      if (res.status === "success") {
+      const res = await addProductToCart(productId); // استخدام الدالة الصحيحة هنا
+      if (res?.status === "success") {
         toast.success("Added successfully to Cart", { duration: 1500, position: "top-center" });
       } else {
         toast.error("Error occurred while adding to Cart", { duration: 1500, position: "top-center" });
@@ -51,12 +51,11 @@ export default function Products() {
   if (isLoading) {
     return (
       <div className="d-flex vh-100 bg-light justify-content-center align-items-center">
-      <div className="lds-ripple">
-        <div></div>
-        <div></div>
+        <div className="lds-ripple">
+          <div></div>
+          <div></div>
+        </div>
       </div>
-    </div>
-
     );
   }
 

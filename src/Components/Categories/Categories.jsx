@@ -14,15 +14,12 @@ export default function Category() {
   // Show loader while fetching data
   if (isLoading) {
     return (
-      <div className='d-flex vh-100 bg-primary bg-opacity-50 justify-content-center align-items-center'>
-        <Audio
-          height="100"
-          width="100"
-          color="#4fa94d"
-          ariaLabel="audio-loading"
-          visible={true}
-        />
+      <div className="d-flex vh-100 bg-light justify-content-center align-items-center">
+      <div className="lds-ripple">
+        <div></div>
+        <div></div>
       </div>
+    </div>
     );
   }
 

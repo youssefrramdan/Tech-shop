@@ -17,7 +17,6 @@ export default function CartContext({ children }) {
         Authorization: userToken,
     };
 
-    // وظيفة لإضافة منتج إلى السلة
     async function addProductToCart(productId, quantity = 1) {
         try {
             const { data } = await axios.post(
@@ -37,14 +36,13 @@ export default function CartContext({ children }) {
         }
     }
 
-    // وظيفة لجلب بيانات السلة
     async function getUserCart() {
         try {
             const { data } = await axios.get('https://gcm.onrender.com/api/carts', { headers });
             const cart = data.cart;
 
             const formattedCartItems = cart.cartItems.map((item) => ({
-                id: item.id, // معرف العنصر في السلة
+                id: item.id,
                 product: {
                     id: item.product.id,
                     name: item.product.name,
@@ -58,27 +56,22 @@ export default function CartContext({ children }) {
             setNumOfCartItems(formattedCartItems.length);
             setTotalCartPrice(cart.totalCartPrice);
             setCartID(cart._id);
-
-            console.log('Formatted Cart Items:', formattedCartItems);
         } catch (error) {
             console.error('Error fetching cart:', error);
         }
     }
 
-    // وظيفة لتحديث كمية منتج داخل السلة باستخدام productId
     async function updateProductQuantity(productId, newQuantity) {
         try {
-            console.log('Sending to API:', { productId, newQuantity }); // لتتبع القيم المرسلة
             const { data } = await axios.put(
                 `https://gcm.onrender.com/api/carts/${productId}`,
                 { quantity: newQuantity },
                 { headers }
             );
             if (data.message === 'Product quantity updated successfully') {
-                await getUserCart(); // تحديث بيانات السلة بعد التعديل
+                await getUserCart();
                 return true;
             } else {
-                console.error('Unexpected API response:', data);
                 return false;
             }
         } catch (error) {
@@ -87,22 +80,20 @@ export default function CartContext({ children }) {
         }
     }
 
-    // وظيفة لحذف منتج من السلة باستخدام cartItemId
     async function deleteProductFromCart(cartItemId) {
         try {
             const { data } = await axios.delete(`https://gcm.onrender.com/api/carts/${cartItemId}`, { headers });
             if (data.message === 'Item removed successfully') {
-                await getUserCart(); // تحديث بيانات السلة بعد الحذف
+                await getUserCart();
                 return true;
             }
-            return false;  // إذا كانت الرسالة غير متوقعة
+            return false;
         } catch (error) {
             console.error('Error deleting product from cart:', error);
             return false;
         }
     }
 
-    // وظيفة لإفراغ السلة بالكامل
     async function clearCart() {
         try {
             const { data } = await axios.delete('https://gcm.onrender.com/api/carts', { headers });
@@ -118,9 +109,33 @@ export default function CartContext({ children }) {
         }
     }
 
+    async function placeOrder(shippingAddress) {
+        if (!cartID) {
+            console.error('No cart ID available to place an order.');
+            return { status: 'error', message: 'Cart ID is missing.' };
+        }
+
+        try {
+            const response = await axios.post(
+                `https://gcm.onrender.com/api/orders/${cartID}`,
+                { shippingAddress },
+                { headers }
+            );
+            if (response.data.message === 'Order created successfully') {
+                await clearCart();
+                return { status: 'success', order: response.data.order };
+            } else {
+                return { status: 'error', message: response.data.message || 'Order failed.' };
+            }
+        } catch (error) {
+            console.error('Error placing order:', error);
+            return { status: 'error', message: error.response?.data?.message || 'Unexpected error occurred.' };
+        }
+    }
+
     useEffect(() => {
         if (userToken) {
-            getUserCart(); // جلب بيانات السلة عند تحميل السياق
+            getUserCart();
         }
     }, [userToken]);
 
@@ -136,6 +151,7 @@ export default function CartContext({ children }) {
                 clearCart,
                 getUserCart,
                 cartID,
+                placeOrder,
             }}
         >
             {children}

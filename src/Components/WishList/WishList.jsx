@@ -40,17 +40,12 @@ export default function WishList() {
   //console.log('count' , data.data.count);
 
     if (isLoading) {
-     return <div className='d-flex vh-100 bg-primary bg-opacity-50 justify-content-center align-items-center '>
-       <Audio
-         height="100"
-         width="100"
-         color="#4fa94d"
-         ariaLabel="audio-loading"
-         wrapperStyle={{}}
-         wrapperClass="wrapper-class"
-         visible={true}
-       />
-     </div>
+      <div className="d-flex vh-100 bg-light justify-content-center align-items-center">
+      <div className="lds-ripple">
+        <div></div>
+        <div></div>
+      </div>
+    </div>
    }
   if (!data?.data.count) {
     return <>

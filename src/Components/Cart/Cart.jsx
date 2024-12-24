@@ -148,7 +148,7 @@ export default function Cart() {
                         <button className="btn btn-danger w-100 mb-2" onClick={clearCart}>
                             Clear Cart
                         </button>
-                        <Link to="/checkout" className="btn btn-primary w-100">
+                        <Link to="/payment" className="btn btn-primary w-100">
                             Proceed to Checkout
                         </Link>
                     </div>

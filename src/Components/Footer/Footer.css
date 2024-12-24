@@ -1,0 +1,28 @@
+.footer {
+    background: #212529; /* لون داكن */
+    color: #fff; /* نص أبيض */
+  }
+  
+  .footer h5 {
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .footer a {
+    color: #ffc107; /* لون الروابط */
+    transition: all 0.3s ease;
+  }
+  
+  .footer a:hover {
+    color: #ffffff; /* تغيير اللون عند التمرير */
+  }
+  
+  .footer .fab {
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+  }
+  
+  .footer .fab:hover {
+    color: #ffc107; /* لون عند التمرير */
+  }
+  

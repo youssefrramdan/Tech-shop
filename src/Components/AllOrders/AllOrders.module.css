@@ -1,1 +1,52 @@
-.AllOrders {}
+.container {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.card-header {
+  background-color: #0d6efd !important;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-footer {
+  background-color: #f8f9fa;
+}
+
+.list-group-item {
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.list-group-item strong {
+  font-size: 1rem;
+}
+
+.card {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+.badge {
+  padding: 0.5em 1em;
+  border-radius: 0.5rem;
+}
+
+.badge.bg-success {
+  background-color: #28a745 !important;
+}
+
+.badge.bg-warning {
+  background-color: #ffc107 !important;
+  color: #212529;
+}
