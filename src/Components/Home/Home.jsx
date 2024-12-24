@@ -1,13 +1,13 @@
-import axios from 'axios'
-import { Audio } from 'react-loader-spinner'
-import { useQuery } from 'react-query'
-import SimpleSlider from '../HomeSlider/HomeSlider'
-import CategorySlider from '../CategorySlider/CategorySlider'
-import { Link } from 'react-router-dom'
-import { useContext } from "react"
-import { cartContext } from "../../Context/CartContext"
-import toast from "react-hot-toast"
-import { WishListContext } from "../../Context/WishListContext"
+import axios from 'axios';
+import { Audio } from 'react-loader-spinner';
+import { useQuery } from 'react-query';
+import SimpleSlider from '../HomeSlider/HomeSlider';
+import CategorySlider from '../CategorySlider/CategorySlider';
+import { Link } from 'react-router-dom';
+import { useContext } from "react";
+import { cartContext } from "../../Context/CartContext";
+import toast from "react-hot-toast";
+import { WishListContext } from "../../Context/WishListContext";
 
 export default function Products() {
   const { addProductTOCart } = useContext(cartContext);
@@ -15,31 +15,39 @@ export default function Products() {
 
   // Function to add a product to the Wishlist
   async function productToWishList(id) {
-    const res = await addToWishList(id);
-    if (res.status === 'success') {
-      toast.success('Added successfully to Wish List', { duration: 1000, position: 'top-center' });
-    } else {
-      toast.error('Error occurred', { duration: 1500 , position: 'top-center' });
+    try {
+      const res = await addToWishList(id);
+      if (res.status === 'success') {
+        toast.success('Added successfully to Wish List', { duration: 1000, position: 'top-center' });
+      } else {
+        toast.error('Error occurred', { duration: 1500, position: 'top-center' });
+      }
+    } catch (error) {
+      console.error("Error adding to Wishlist:", error);
+      toast.error('An unexpected error occurred', { duration: 1500, position: 'top-center' });
     }
   }
 
   // Function to add a product to the Cart
   async function addProduct(id) {
-    const res = await addProductTOCart(id);
-    if (res?.status === 'success') {
-      toast.success('Added successfully', { duration: 1500, position: 'top-center' });
-    } else {
-      toast.error(`Error occurred: ${res?.message || "Unknown error"}`, { duration: 1500, position: 'top-center' });
+    try {
+      const res = await addProductTOCart(id);
+      if (res?.status === 'success') {
+        toast.success('Added successfully to Cart', { duration: 1500, position: 'top-center' });
+      } else {
+        toast.error(`Error occurred: ${res?.message || "Unknown error"}`, { duration: 1500, position: 'top-center' });
+      }
+    } catch (error) {
+      console.error("Error adding to Cart:", error);
+      toast.error('An unexpected error occurred', { duration: 1500, position: 'top-center' });
     }
   }
-  
 
   // getAllProducts function to fetch data from the new API endpoint
   async function getAllProducts() {
-    // Use the new API URL here
     const response = await axios.get("https://gcm.onrender.com/api/products");
     console.log(response.data);
-    return response;
+    return response.data;
   }
 
   // React Query to fetch data
@@ -97,18 +105,13 @@ export default function Products() {
       {/* Product list section */}
       <div className="container products mt-4">
         <div className="row gy-3 mt-5">
-          {/* We are using data.data.products instead of data.data.data because of the new response structure */}
-          {data.data.products.map((product) => (
+          {data.products.map((product) => (
             <div key={product._id} className="col-6 col-sm-4 col-md-3 col-lg-2 gx-5 gy-5 overflow-hidden position-relative">
               <Link className='product h-100 text-center' to={`/productdetails/${product._id}`}>
                 <div>
                   <img src={product.imageCover} className='w-75' alt={product.name} />
-                  {/* If category exists, display it */}
                   <h6 className='text-main'>{product.category?.name}</h6>
-                  {/* Replaced title with name */}
                   <h2 className='h4 text-center'>{product.name.split(' ').slice(0, 2).join(' ')}</h2>
-                  
-                  {/* Display price and discounted price if available */}
                   <div className='d-flex justify-content-between'>
                     {product.priceAfterDiscount ? (
                       <p>
@@ -117,7 +120,6 @@ export default function Products() {
                     ) : (
                       <p>{product.price}</p>
                     )}
-
                     <p>Sold: {product.sold}</p>
                   </div>
                 </div>

@@ -4,50 +4,39 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Audio } from 'react-loader-spinner';
-import './Register.module.css';
 
 export default function Register() {
   const [errMsg, setErrMsg] = useState('');
-  const [isSuccess, setIsSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   async function registerSubmit(values) {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      const response = await axios.post(
-        `https://gcm.onrender.com/api/auth/signup`,
-        values
-      );
+      const res = await axios.post(`https://gcm.onrender.com/api/auth/signup`, values);
 
-      if (response.data.message === 'Registration successful') {
-        setIsSuccess(true);
-        setTimeout(() => navigate('/login'), 1000);
-      } else {
-        setErrMsg('Something went wrong!');
+      if (res.data.message === 'Registration successful') {
+        navigate('/login'); // Redirect to login after successful registration
       }
     } catch (error) {
-      setErrMsg(error.response?.data?.message || 'Registration failed!');
+      if (error.response) {
+        setErrMsg(error.response.data.message || 'Registration failed due to server error');
+      } else if (error.request) {
+        setErrMsg('No response was received');
+      } else {
+        setErrMsg('Error setting up the request');
+      }
     } finally {
       setIsLoading(false);
     }
   }
 
-  // Validation schema
-  const phoneRegExp = /^[0-9]{11}$/;
   const validationSchema = Yup.object({
-    name: Yup.string()
-      .min(3, 'Name must be at least 3 characters')
-      .max(10, 'Name cannot exceed 10 characters')
-      .required('Name is required'),
-    email: Yup.string()
-      .email('Invalid email format')
-      .required('Email is required'),
-    phone: Yup.string()
-      .matches(phoneRegExp, 'Phone number must be 11 digits')
-      .required('Phone number is required'),
+    name: Yup.string().min(3).max(10).required('Name is required'),
+    email: Yup.string().email('Invalid email').required('Email is required'),
+    phone: Yup.string().matches(/^[0-9]{11}$/, 'Phone number must be 11 digits').required('Phone number is required'),
     password: Yup.string()
-      .matches(/^[A-Z][a-zA-Z0-9]{6,}$/, 'Password must start with a capital letter and be at least 6 characters')
+      .matches(/^[A-Z][a-zA-Z0-9]{6,}$/, 'Password must start with an uppercase letter and be at least 6 characters long')
       .required('Password is required'),
     rePassword: Yup.string()
       .oneOf([Yup.ref('password')], "Passwords don't match")
@@ -68,128 +57,76 @@ export default function Register() {
 
   return (
     <div className="w-75 mx-auto py-5">
-      {isSuccess && (
-        <div
-          style={{ backgroundColor: '#0aad0a' }}
-          className="alert alert-success text-center"
-        >
-          Congratulations! Your account has been created.
-        </div>
+      {isLoading && (
+        <Audio height="20" width="80" color="white" ariaLabel="loading" />
       )}
       <h3>Register Now</h3>
-      <form
-        className="shadow p-5 m-auto rounded-4"
-        onSubmit={formik.handleSubmit}
-      >
-        {/* Name Field */}
+      <form onSubmit={formik.handleSubmit}>
         <label htmlFor="name">Name:</label>
         <input
           className="form-control mb-2"
-          type="text"
           id="name"
           name="name"
-          onBlur={formik.handleBlur}
+          type="text"
           onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
           value={formik.values.name}
         />
-        {formik.errors.name && formik.touched.name && (
-          <div className="alert p-2 mt-2 alert-danger">
-            {formik.errors.name}
-          </div>
-        )}
+        {formik.errors.name && formik.touched.name && <div>{formik.errors.name}</div>}
 
-        {/* Email Field */}
         <label htmlFor="email">Email:</label>
         <input
           className="form-control mb-2"
-          type="email"
           id="email"
           name="email"
-          onBlur={formik.handleBlur}
+          type="email"
           onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
           value={formik.values.email}
         />
-        {formik.errors.email && formik.touched.email && (
-          <div className="alert p-2 mt-2 alert-danger">
-            {formik.errors.email}
-          </div>
-        )}
+        {formik.errors.email && formik.touched.email && <div>{formik.errors.email}</div>}
 
-        {/* Phone Field */}
         <label htmlFor="phone">Phone:</label>
         <input
           className="form-control mb-2"
-          type="tel"
           id="phone"
           name="phone"
-          onBlur={formik.handleBlur}
+          type="tel"
           onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
           value={formik.values.phone}
         />
-        {formik.errors.phone && formik.touched.phone && (
-          <div className="alert p-2 mt-2 alert-danger">
-            {formik.errors.phone}
-          </div>
-        )}
+        {formik.errors.phone && formik.touched.phone && <div>{formik.errors.phone}</div>}
 
-        {/* Password Field */}
         <label htmlFor="password">Password:</label>
         <input
           className="form-control mb-2"
-          type="password"
           id="password"
           name="password"
-          onBlur={formik.handleBlur}
+          type="password"
           onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
           value={formik.values.password}
         />
-        {formik.errors.password && formik.touched.password && (
-          <div className="alert p-2 mt-2 alert-danger">
-            {formik.errors.password}
-          </div>
-        )}
+        {formik.errors.password && formik.touched.password && <div>{formik.errors.password}</div>}
 
-        {/* Confirm Password Field */}
         <label htmlFor="rePassword">Confirm Password:</label>
         <input
           className="form-control mb-2"
-          type="password"
           id="rePassword"
           name="rePassword"
-          onBlur={formik.handleBlur}
+          type="password"
           onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
           value={formik.values.rePassword}
         />
-        {formik.errors.rePassword && formik.touched.rePassword && (
-          <div className="alert p-2 mt-2 alert-danger">
-            {formik.errors.rePassword}
-          </div>
-        )}
+        {formik.errors.rePassword && formik.touched.rePassword && <div>{formik.errors.rePassword}</div>}
 
-        {/* Error Message */}
-        {errMsg && (
-          <div className="alert p-2 mt-2 alert-danger">{errMsg}</div>
-        )}
+        {errMsg && <div>{errMsg}</div>}
 
-        {/* Submit Button */}
-        {isLoading ? (
-          <button className="btn bg-main text-white mt-2" type="button">
-            <Audio
-              height="20"
-              width="80"
-              color="white"
-              ariaLabel="audio-loading"
-            />
-          </button>
-        ) : (
-          <button
-            type="submit"
-            disabled={!(formik.isValid && formik.dirty)}
-            className="btn bg-main text-white mt-2"
-          >
-            Register
-          </button>
-        )}
+        <button type="submit" className="btn btn-primary">
+          Register
+        </button>
       </form>
     </div>
   );

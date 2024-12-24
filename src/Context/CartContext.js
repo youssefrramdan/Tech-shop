@@ -1,104 +1,115 @@
-import axios from 'axios'
-import React, { createContext, useContext, useEffect, useState } from 'react'
-import { UserContext } from './UserContext'
+import axios from 'axios';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { UserContext } from './UserContext';
 
-export const cartContext = createContext()
+export const cartContext = createContext();
 
-export default function CartContextProvider({ children }) {
-
+export default function CartContext({ children }) {
     const { userToken } = useContext(UserContext);
     const [numOfCartItems, setNumOfCartItems] = useState(0);
     const [totalCartPrice, setTotalCartPrice] = useState(0);
     const [allProducts, setAllProducts] = useState([]);
     const [cartID, setCartID] = useState([]);
 
-    async function addProductTOCart(productId) {
+    // هيدر يحتوي على التوكن مباشرة
+    const headers = {
+        Authorization: userToken, 
+    };
 
+    async function addProductToCart(productId, quantity = 1) {
         try {
-            const { data } = await axios.post('https://ecommerce.routemisr.com/api/v1/cart', { 'productId': productId }, { headers: { token: localStorage.getItem('userToken') } })
-            getUserCart();
+            const { data } = await axios.post(
+                'https://gcm.onrender.com/api/carts',
+                { product: productId, quantity },
+                { headers }
+            );
+            await getUserCart();
             return data;
+        } catch (error) {
+            console.error(error);
         }
-        catch (e) {
-            console.log(e);
-        }
-
     }
 
-    function getUserCart() {
-        axios.get('https://ecommerce.routemisr.com/api/v1/cart', {
-            headers: { token: localStorage.getItem('userToken') }
-        }).then((res) => {
-            setAllProducts(res.data.data.products);
-            setNumOfCartItems(res.data.numOfCartItems);
-            setTotalCartPrice(res.data.data.totalCartPrice);
-            setCartID(res.data.data._id);
-            localStorage.setItem('userID', res.data.data.cartOwner)
-
-            console.log('res', res.data);
-        }).catch((e) => {
-            // window.location.reload()
-            // console.log('error ', e);
-        })
+    async function getUserCart() {
+        try {
+            const { data } = await axios.get('https://gcm.onrender.com/api/carts', {
+                headers,
+            });
+            const cart = data.cart;
+            setAllProducts(cart.cartItems);
+            setNumOfCartItems(cart.cartItems.length);
+            setTotalCartPrice(cart.totalCartPrice);
+            setCartID(cart._id);
+        } catch (error) {
+            console.error('Error fetching cart:', error);
+        }
     }
-    async function updateCount(id, newCount) {
-        const booleanFlag = await axios.put(`https://ecommerce.routemisr.com/api/v1/cart/${id}`, {
-            'count': newCount
-        }, {
-            headers: {
-                token: localStorage.getItem('userToken')
-            }
-        }).then((res) => {
-            setAllProducts(res.data.data.products);
-            setNumOfCartItems(res.data.numOfCartItems);
-            setTotalCartPrice(res.data.data.totalCartPrice);
+
+    async function updateProductQuantity(productId, newQuantity) {
+        try {
+            const { data } = await axios.put(
+                `https://your-api-endpoint/cart/update/${productId}`,
+                { quantity: newQuantity },
+                { headers }
+            );
+            await getUserCart();
             return true;
-
-        }).catch((err) => {
-            console.log('err', err);
+        } catch (error) {
+            console.error('Error updating product quantity:', error);
             return false;
-        })
-        return booleanFlag;
+        }
     }
 
     async function clearCart() {
-        const res = await axios.delete(`https://ecommerce.routemisr.com/api/v1/cart`, {
-            headers: { token: localStorage.getItem('userToken') }
-        }).then((res) => {
+        try {
+            const { data } = await axios.delete('https://gcm.onrender.com/api/carts', {
+                headers,
+            });
             setAllProducts([]);
             setNumOfCartItems(0);
             setTotalCartPrice(0);
-            console.log(res.data);
-
             return true;
-
-        }).catch((err) => {
-            console.log('err', err);
+        } catch (error) {
+            console.error('Error clearing cart:', error);
             return false;
-        })
-        return res;
+        }
     }
-    async function deleteproduct(id) {
-        const res = await axios.delete(`https://ecommerce.routemisr.com/api/v1/cart/${id}`, {
-            headers: { token: localStorage.getItem('userToken') }
-        }).then((res) => {
-            setAllProducts(res.data.data.products);
-            setNumOfCartItems(res.data.numOfCartItems);
-            setTotalCartPrice(res.data.data.totalCartPrice);
+
+    async function deleteProductFromCart(itemId) {
+        try {
+            const { data } = await axios.delete(
+                `https://gcm.onrender.com/api/carts/${itemId}`,
+                { headers }
+            );
+            await getUserCart();
             return true;
-
-        }).catch((err) => {
-            console.log('err', err);
+        } catch (error) {
+            console.error('Error deleting product:', error);
             return false;
-        })
-        return res;
+        }
     }
+
     useEffect(() => {
-        console.log('getting');
-        getUserCart();
+        if (userToken) {
+            getUserCart();
+        }
     }, [userToken]);
 
-    return <cartContext.Provider value={{ addProductTOCart, numOfCartItems, totalCartPrice, allProducts, updateCount, deleteproduct, clearCart, getUserCart, cartID }}>
-        {children}
-    </cartContext.Provider>
+    return (
+        <cartContext.Provider
+            value={{
+                addProductToCart,
+                numOfCartItems,
+                totalCartPrice,
+                allProducts,
+                updateProductQuantity,
+                deleteProductFromCart,
+                clearCart,
+                getUserCart,
+                cartID,
+            }}
+        >
+            {children}
+        </cartContext.Provider>
+    );
 }
