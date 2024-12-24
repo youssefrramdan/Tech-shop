@@ -87,28 +87,26 @@ export default function CartContext({ children }) {
         }
     }
 
-    // وظيفة لحذف منتج من السلة باستخدام productId
-    // src/Context/CartContext.js
-
-async function deleteProductFromCart(cartItemId) {
-    try {
-        const { data } = await axios.delete(`https://gcm.onrender.com/api/carts/${cartItemId}`, { headers });
-        if (data.message === 'Item removed successfully') {
-            await getUserCart(); // تحديث بيانات السلة بعد الحذف
-            return true;
+    // وظيفة لحذف منتج من السلة باستخدام cartItemId
+    async function deleteProductFromCart(cartItemId) {
+        try {
+            const { data } = await axios.delete(`https://gcm.onrender.com/api/carts/${cartItemId}`, { headers });
+            if (data.message === 'Item removed successfully') {
+                await getUserCart(); // تحديث بيانات السلة بعد الحذف
+                return true;
+            }
+            return false;  // إذا كانت الرسالة غير متوقعة
+        } catch (error) {
+            console.error('Error deleting product from cart:', error);
+            return false;
         }
-        return false;  // إذا كانت الرسالة غير متوقعة
-    } catch (error) {
-        console.error('Error deleting product from cart:', error);
-        return false;
     }
-}
 
     // وظيفة لإفراغ السلة بالكامل
     async function clearCart() {
         try {
             const { data } = await axios.delete('https://gcm.onrender.com/api/carts', { headers });
-            if (data.message === 'success') {
+            if (data.message === 'cart removed successfully') {
                 setAllProducts([]);
                 setNumOfCartItems(0);
                 setTotalCartPrice(0);

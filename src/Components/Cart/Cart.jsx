@@ -60,9 +60,9 @@ export default function Cart() {
         }
     }
 
-     async function handleDeleteProduct(productId) {
-        console.log('Deleting product:', { productId }); // لتتبع القيم
-        const res = await deleteProductFromCart(productId);
+    async function handleDeleteProduct(cartItemId) {
+        console.log('Deleting product:', { cartItemId }); // لتتبع القيم
+        const res = await deleteProductFromCart(cartItemId);
         if (res) {
             toast.success('Product removed successfully', { duration: 1500, position: 'top-center' });
         } else {
@@ -115,7 +115,7 @@ export default function Cart() {
                                     </div>
                                     <button
                                         className="btn btn-danger mt-2"
-                                        onClick={() => handleDeleteProduct(cartItem.id)}
+                                        onClick={() => handleDeleteProduct(cartItem.id)} // تمرير cartItem.id بدلاً من cartItem.product.id
                                     >
                                         Remove
                                     </button>
