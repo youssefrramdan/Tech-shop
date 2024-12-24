@@ -1,70 +1,105 @@
 import React from "react";
-import "./Footer.css"; // ملف CSS مخصص
+import "./Footer.css";
 
 export default function Footer() {
   return (
-    <footer className="footer bg-dark text-white py-4">
-      <div className="container">
+    <footer className="footer">
+      <div className="container py-4">
         <div className="row">
-          {/* قسم معلومات الموقع */}
-          <div className="col-md-4 mb-3">
-            <h5>About Us</h5>
-            <p className="text-muted">
-              Welcome to TechSphere! Your one-stop shop for the best electronics and gadgets.
-            </p>
+          {/* Logo Section */}
+          <div className="col-lg-3 col-md-6 mb-4">
+            <h5 className="footer-logo">TechSphere</h5>
+            <p className="text-muted">Your ultimate destination for tech solutions and gadgets.</p>
+            <div className="social-icons mt-3">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+                <i className="fab fa-facebook-f"></i>
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+                <i className="fab fa-twitter"></i>
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+                <i className="fab fa-instagram"></i>
+              </a>
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+                <i className="fab fa-github"></i>
+              </a>
+            </div>
           </div>
 
-          {/* قسم الروابط */}
-          <div className="col-md-4 mb-3">
-            <h5>Quick Links</h5>
+          {/* Documentation Section */}
+          <div className="col-lg-2 col-md-6 mb-4">
+            <h6 className="footer-title">Documentation</h6>
             <ul className="list-unstyled">
               <li>
-                <a href="/" className="text-white text-decoration-none">
-                  Home
-                </a>
+                <a href="/">Getting Started</a>
               </li>
               <li>
-                <a href="/products" className="text-white text-decoration-none">
-                  Products
-                </a>
+                <a href="/">Components</a>
               </li>
               <li>
-                <a href="/contact" className="text-white text-decoration-none">
-                  Contact Us
-                </a>
+                <a href="/">API Playground</a>
               </li>
               <li>
-                <a href="/about" className="text-white text-decoration-none">
-                  About Us
-                </a>
+                <a href="/">Pricing</a>
               </li>
             </ul>
           </div>
 
-          {/* قسم وسائل التواصل الاجتماعي */}
-          <div className="col-md-4 mb-3 text-center">
-            <h5>Follow Us</h5>
-            <div className="d-flex justify-content-center gap-3">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-white">
-                <i className="fab fa-facebook fa-lg"></i>
-              </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-white">
-                <i className="fab fa-twitter fa-lg"></i>
-              </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-white">
-                <i className="fab fa-instagram fa-lg"></i>
-              </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-white">
-                <i className="fab fa-linkedin fa-lg"></i>
-              </a>
-            </div>
+          {/* Resources Section */}
+          <div className="col-lg-2 col-md-6 mb-4">
+            <h6 className="footer-title">Resources</h6>
+            <ul className="list-unstyled">
+              <li>
+                <a href="/">Customers</a>
+              </li>
+              <li>
+                <a href="/">Enterprise</a>
+              </li>
+              <li>
+                <a href="/">Templates</a>
+              </li>
+              <li>
+                <a href="/">Integrations</a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Company Section */}
+          <div className="col-lg-2 col-md-6 mb-4">
+            <h6 className="footer-title">Company</h6>
+            <ul className="list-unstyled">
+              <li>
+                <a href="/">Careers</a>
+              </li>
+              <li>
+                <a href="/">Blog</a>
+              </li>
+              <li>
+                <a href="/">Public Roadmap</a>
+              </li>
+              <li>
+                <a href="/">Security</a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Legal Section */}
+          <div className="col-lg-3 col-md-12 mb-4">
+            <h6 className="footer-title">Legal</h6>
+            <ul className="list-unstyled">
+              <li>
+                <a href="/">Privacy Policy</a>
+              </li>
+              <li>
+                <a href="/">Terms of Service</a>
+              </li>
+            </ul>
           </div>
         </div>
 
-        {/* حقوق الطبع */}
-        <div className="text-center mt-3">
-          <p className="text-muted">
-            &copy; {new Date().getFullYear()} TechSphere. All Rights Reserved.
+        <div className="text-center mt-4">
+          <p className="text-muted mb-0">
+            &copy; {new Date().getFullYear()} TechSphere, Inc. All rights reserved.
           </p>
         </div>
       </div>

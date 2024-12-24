@@ -1,28 +1,68 @@
 .footer {
-    background: #212529; /* لون داكن */
-    color: #fff; /* نص أبيض */
+  background-color: #121212; /* لون داكن */
+  color: #ffffff; /* نص أبيض */
+  padding: 40px 0;
+}
+
+.footer-logo {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #00c853;
+}
+
+.footer-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.footer p {
+  font-size: 14px;
+  color: #bdbdbd;
+}
+
+.footer ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer ul li {
+  margin-bottom: 10px;
+}
+
+.footer ul li a {
+  text-decoration: none;
+  color: #bdbdbd;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.footer ul li a:hover {
+  color: #ffffff;
+}
+
+.social-icons a {
+  margin-right: 15px;
+  color: #bdbdbd;
+  font-size: 18px;
+  transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #00c853; /* لون أخضر مميز */
+}
+
+.text-muted {
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .footer {
+    text-align: center;
   }
-  
-  .footer h5 {
-    font-weight: bold;
-    margin-bottom: 1rem;
+
+  .social-icons {
+    justify-content: center;
   }
-  
-  .footer a {
-    color: #ffc107; /* لون الروابط */
-    transition: all 0.3s ease;
-  }
-  
-  .footer a:hover {
-    color: #ffffff; /* تغيير اللون عند التمرير */
-  }
-  
-  .footer .fab {
-    font-size: 1.5rem;
-    transition: all 0.3s ease;
-  }
-  
-  .footer .fab:hover {
-    color: #ffc107; /* لون عند التمرير */
-  }
-  
+}
