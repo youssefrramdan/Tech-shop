@@ -1,3 +1,5 @@
+// src/Context/CartContext.js
+
 import axios from 'axios';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { UserContext } from './UserContext';
@@ -11,9 +13,8 @@ export default function CartContext({ children }) {
     const [allProducts, setAllProducts] = useState([]);
     const [cartID, setCartID] = useState(null);
 
-    // إعداد الهيدر للتعامل مع التوكن
     const headers = {
-        Authorization: userToken, // التوكن يتم إضافته مباشرة
+        Authorization: userToken,
     };
 
     // وظيفة لإضافة منتج إلى السلة
@@ -25,7 +26,7 @@ export default function CartContext({ children }) {
                 { headers }
             );
             if (data.message === 'success') {
-                await getUserCart(); // تحديث بيانات السلة بعد الإضافة
+                await getUserCart();
                 return { status: 'success', cart: data.cart };
             } else {
                 return { status: 'error', message: data.message || 'Failed to add product' };
@@ -41,46 +42,67 @@ export default function CartContext({ children }) {
         try {
             const { data } = await axios.get('https://gcm.onrender.com/api/carts', { headers });
             const cart = data.cart;
-            setAllProducts(cart.cartItems);
-            setNumOfCartItems(cart.cartItems.length);
+
+            const formattedCartItems = cart.cartItems.map((item) => ({
+                id: item.id, // معرف العنصر في السلة
+                product: {
+                    id: item.product.id,
+                    name: item.product.name,
+                    image: item.product.image,
+                },
+                quantity: item.quantity,
+                price: item.price,
+            }));
+
+            setAllProducts(formattedCartItems);
+            setNumOfCartItems(formattedCartItems.length);
             setTotalCartPrice(cart.totalCartPrice);
             setCartID(cart._id);
+
+            console.log('Formatted Cart Items:', formattedCartItems);
         } catch (error) {
             console.error('Error fetching cart:', error);
         }
     }
 
-    // وظيفة لتحديث كمية منتج داخل السلة
+    // وظيفة لتحديث كمية منتج داخل السلة باستخدام productId
     async function updateProductQuantity(productId, newQuantity) {
         try {
+            console.log('Sending to API:', { productId, newQuantity }); // لتتبع القيم المرسلة
             const { data } = await axios.put(
                 `https://gcm.onrender.com/api/carts/${productId}`,
                 { quantity: newQuantity },
                 { headers }
             );
-            if (data.message === 'success') {
+            if (data.message === 'Product quantity updated successfully') {
                 await getUserCart(); // تحديث بيانات السلة بعد التعديل
                 return true;
+            } else {
+                console.error('Unexpected API response:', data);
+                return false;
             }
         } catch (error) {
-            console.error('Error updating product quantity:', error);
+            console.error('Error occurred while updating product quantity:', error.response?.data || error.message);
             return false;
         }
     }
 
-    // وظيفة لحذف منتج من السلة
-    async function deleteProductFromCart(itemId) {
-        try {
-            const { data } = await axios.delete(`https://gcm.onrender.com/api/carts/${itemId}`, { headers });
-            if (data.message === 'success') {
-                await getUserCart(); // تحديث بيانات السلة بعد الحذف
-                return true;
-            }
-        } catch (error) {
-            console.error('Error deleting product from cart:', error);
-            return false;
+    // وظيفة لحذف منتج من السلة باستخدام productId
+    // src/Context/CartContext.js
+
+async function deleteProductFromCart(cartItemId) {
+    try {
+        const { data } = await axios.delete(`https://gcm.onrender.com/api/carts/${cartItemId}`, { headers });
+        if (data.message === 'Item removed successfully') {
+            await getUserCart(); // تحديث بيانات السلة بعد الحذف
+            return true;
         }
+        return false;  // إذا كانت الرسالة غير متوقعة
+    } catch (error) {
+        console.error('Error deleting product from cart:', error);
+        return false;
     }
+}
 
     // وظيفة لإفراغ السلة بالكامل
     async function clearCart() {

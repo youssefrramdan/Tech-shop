@@ -20,7 +20,7 @@ export default function Home() {
             if (res?.status === 'success') {
                 toast.success('Added successfully to Wish List', { duration: 1000, position: 'top-center' });
             } else {
-                toast.error('Error occurred', { duration: 1500, position: 'top-center' });
+                toast.error('Error occurred while adding to Wishlist', { duration: 1500, position: 'top-center' });
             }
         } catch (error) {
             console.error("Error adding to Wishlist:", error);
@@ -29,9 +29,9 @@ export default function Home() {
     }
 
     // Function to add a product to the Cart
-    async function addProduct(id) {
+    async function addProduct(productId, quantity = 1) {
         try {
-            const res = await addProductToCart(id);
+            const res = await addProductToCart(productId, quantity);
             if (res?.status === 'success') {
                 toast.success('Added successfully to Cart', { duration: 1500, position: 'top-center' });
             } else {
@@ -123,7 +123,7 @@ export default function Home() {
                             <Link className='product h-100 text-center' to={`/productdetails/${product._id}`}>
                                 <div>
                                     <img src={product.imageCover} className='w-75' alt={product.name} />
-                                    <h6 className='text-main'>{product.category?.name}</h6>
+                                    <h6 className='text-main'>{product.category?.name || "Uncategorized"}</h6>
                                     <h2 className='h4 text-center'>{product.name.split(' ').slice(0, 2).join(' ')}</h2>
                                     <div className='d-flex justify-content-between'>
                                         {product.priceAfterDiscount ? (
