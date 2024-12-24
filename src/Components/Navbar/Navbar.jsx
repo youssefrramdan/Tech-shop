@@ -67,9 +67,9 @@ export default function Navbar() {
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link text-dark" to="/wishlist">
+              {/* <NavLink className="nav-link text-dark" to="/">
                 Wishlist
-              </NavLink>
+              </NavLink> */}
             </li>
           </ul>
           <ul className="navbar-nav ms-auto">
