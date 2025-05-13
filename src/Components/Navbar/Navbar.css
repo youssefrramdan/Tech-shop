@@ -1,31 +1,117 @@
-.navbar {
-  border-bottom: 1px solid #eaeaea;
+.electronimax-navbar {
+  background: #fff;
+  border-bottom: 2px solid #f9d71c;
+  box-shadow: 0 2px 12px rgba(249, 215, 28, 0.07);
+  z-index: 100;
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
-.nav-link {
-  transition: all 0.3s ease;
-  font-size: 16px;
+.electronimax-logo {
+  height: 36px;
+  width: auto;
+  margin-right: 8px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(249, 215, 28, 0.08);
+  background: #fff;
+}
+
+.electronimax-title {
+  color: #f9d71c;
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  text-shadow: 0 2px 8px rgba(249, 215, 28, 0.08);
+}
+
+.navbar-brand {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.navbar-nav .nav-link {
+  color: #222 !important;
+  font-size: 1rem;
   font-weight: 500;
-  padding: 5px 10px;
+  margin: 0 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
 }
 
-.nav-link:hover {
-  color: #0056b3;
-  background-color: transparent;
+.navbar-nav .nav-link.active,
+.navbar-nav .nav-link:hover {
+  background: #f9d71c;
+  color: #000 !important;
+  box-shadow: 0 2px 8px rgba(249, 215, 28, 0.08);
 }
 
-.badge {
-  font-size: 0.8rem;
-  transform: scale(0.9);
-  transform-origin: top;
+.badge.bg-danger {
+  background: #f44336 !important;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.12);
+  top: 2px !important;
+  right: -10px !important;
+}
+
+.btn-primary {
+  background: #f9d71c !important;
+  color: #000 !important;
+  border: none;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-primary:hover {
+  background: #f4d000 !important;
+  color: #000 !important;
 }
 
 .btn-outline-primary {
-  border: 1px solid #0056b3;
-  color: #0056b3;
+  border: 2px solid #f9d71c !important;
+  color: #f9d71c !important;
+  font-weight: 600;
+  border-radius: 8px;
+  background: #fff !important;
+  transition: background 0.2s, color 0.2s;
 }
 
 .btn-outline-primary:hover {
-  background-color: #0056b3;
-  color: white;
+  background: #f9d71c !important;
+  color: #000 !important;
+}
+
+.btn-logout {
+  background: #444 !important;
+  color: #fff !important;
+  border: none;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 8px 24px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-logout:hover {
+  background: #222 !important;
+  color: #fff !important;
+}
+
+.navbar-toggler {
+  border: none;
+  outline: none;
+}
+
+@media (max-width: 991px) {
+  .electronimax-navbar {
+    padding: 6px 0;
+  }
+  .navbar-nav .nav-link {
+    margin: 2px 0;
+    padding: 8px 12px;
+  }
 }

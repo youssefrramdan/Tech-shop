@@ -1,27 +1,30 @@
 import React, { useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaLaptop } from "react-icons/fa"; // أيقونة TechSphere
 import { UserContext } from "../../Context/UserContext";
 import { cartContext } from "../../Context/CartContext";
 import "./Navbar.css";
 
 export default function Navbar() {
-  const { userToken, setUserToken, userData } = useContext(UserContext);
+  const { userToken, userData, logoutUser } = useContext(UserContext);
   const { numOfCartItems } = useContext(cartContext);
   const navigate = useNavigate();
 
-  function Logout() {
-    localStorage.removeItem("userToken");
-    setUserToken(null);
+  function handleLogout() {
+    logoutUser();
     navigate("/login");
   }
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
+    <nav className="navbar navbar-expand-lg navbar-light electronimax-navbar sticky-top py-3 shadow-sm">
       <div className="container">
         <NavLink className="navbar-brand d-flex align-items-center" to="/">
-          <FaLaptop size={30} className="text-primary me-2" />
-          <span className="fw-bold text-primary">TechSphere</span>
+          <img
+            src={process.env.PUBLIC_URL + "/logo.png"}
+            alt="ElectroniMax Logo"
+            height="36"
+            className="me-2 electronimax-logo"
+          />
+          <span className="fw-bold electronimax-title">ElectroniMax</span>
         </NavLink>
         <button
           className="navbar-toggler"
@@ -66,22 +69,19 @@ export default function Navbar() {
                 All Orders
               </NavLink>
             </li>
-            <li className="nav-item">
-              {/* <NavLink className="nav-link text-dark" to="/">
-                Wishlist
-              </NavLink> */}
-            </li>
           </ul>
           <ul className="navbar-nav ms-auto">
             {userToken ? (
               <>
                 <li className="nav-item">
-                  <span className="nav-link text-dark">Hi, {userData?.name}</span>
+                  <span className="nav-link text-dark">
+                    Hi, {userData?.name}
+                  </span>
                 </li>
                 <li className="nav-item">
                   <button
-                    onClick={Logout}
-                    className="btn btn-outline-primary ms-2"
+                    onClick={handleLogout}
+                    className="btn btn-logout ms-2"
                   >
                     Logout
                   </button>
@@ -90,15 +90,15 @@ export default function Navbar() {
             ) : (
               <>
                 <li className="nav-item">
-                  <NavLink className="btn btn-primary text-white me-2" to="/login">
+                  <NavLink
+                    className="btn btn-primary text-white me-2"
+                    to="/login"
+                  >
                     Login
                   </NavLink>
                 </li>
                 <li className="nav-item">
-                  <NavLink
-                    className="btn btn-outline-primary"
-                    to="/register"
-                  >
+                  <NavLink className="btn btn-outline-primary" to="/register">
                     Register
                   </NavLink>
                 </li>

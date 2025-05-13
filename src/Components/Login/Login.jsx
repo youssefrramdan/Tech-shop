@@ -4,50 +4,58 @@ import * as Yup from "yup";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../../Context/UserContext";
+import { AUTH_ENDPOINTS } from "../../utils/apiConfig";
 import "./Login.css";
 
 export default function Login() {
   const { setUserToken, getUserData } = useContext(UserContext);
   const [errMsg, setErrMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("userToken");
     if (token) {
-      navigate("/"); // Redirect to home if already logged in
+      navigate("/");
     }
   }, [navigate]);
 
-  async function loginSubmit(values) {
+  const loginSubmit = async (values) => {
     setIsLoading(true);
+    setErrMsg("");
 
     try {
-      const res = await axios.post(`https://gcm.onrender.com/api/auth/signin`, values);
+      const response = await axios.post(AUTH_ENDPOINTS.LOGIN, values);
 
-      if (res.data.message === "Success login") {
-        localStorage.setItem("userToken", res.data.token);
-        setUserToken(res.data.token);
-        getUserData();
-        navigate("/"); // Redirect to home
+      if (response.data.token) {
+        localStorage.setItem("userToken", response.data.token);
+        await getUserData();
+        navigate("/");
+      } else {
+        setErrMsg(response.data.message || "Login failed. Please try again.");
       }
     } catch (error) {
-      if (error.response) {
-        setErrMsg(error.response.data.message || "Login failed due to server error");
-      } else if (error.request) {
-        setErrMsg("No response was received");
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setErrMsg(error.response.data.message);
       } else {
-        setErrMsg("Error setting up the request");
+        setErrMsg("An unexpected error occurred. Please try again.");
       }
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   const validationSchema = Yup.object({
-    email: Yup.string().email("Invalid email").required("Email is required"),
+    email: Yup.string()
+      .email("Please enter a valid email address")
+      .required("Email is required"),
     password: Yup.string()
-      .matches(/^[A-Z][a-zA-Z0-9]{6,}$/, "Password must start with an uppercase letter and be at least 6 characters long")
+      .min(6, "Password must be at least 6 characters")
       .required("Password is required"),
   });
 
@@ -58,55 +66,95 @@ export default function Login() {
   });
 
   return (
-    <div className="login-page">
-      <div className="login-card p-5 shadow-lg rounded">
-        <h3 className="text-center text-primary mb-4">Login</h3>
-        <form onSubmit={formik.handleSubmit}>
-          <div className="mb-3">
-            <label htmlFor="email" className="form-label">
-              Email Address
-            </label>
-            <input
-              className={`form-control ${formik.errors.email && formik.touched.email ? "is-invalid" : ""}`}
-              id="email"
-              name="email"
-              type="email"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.email}
-              placeholder="Enter your email"
-            />
+    <div className="login-container">
+      <div className="login-wrapper">
+        <div className="login-header">
+          <h2>Welcome Back!</h2>
+          <p>Please sign in to continue</p>
+        </div>
+
+        <form onSubmit={formik.handleSubmit} className="login-form">
+          <div className="form-group">
+            <label htmlFor="email">Email Address</label>
+            <div className="input-group">
+              <i className="fas fa-envelope input-icon"></i>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                className={`form-control ${
+                  formik.errors.email && formik.touched.email
+                    ? "is-invalid"
+                    : ""
+                }`}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.email}
+                placeholder="Enter your email"
+              />
+            </div>
             {formik.errors.email && formik.touched.email && (
-              <div className="invalid-feedback">{formik.errors.email}</div>
+              <div className="error-message">{formik.errors.email}</div>
             )}
           </div>
-          <div className="mb-3">
-            <label htmlFor="password" className="form-label">
-              Password
-            </label>
-            <input
-              className={`form-control ${formik.errors.password && formik.touched.password ? "is-invalid" : ""}`}
-              id="password"
-              name="password"
-              type="password"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.password}
-              placeholder="Enter your password"
-            />
+
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <div className="input-group">
+              <i className="fas fa-lock input-icon"></i>
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                className={`form-control ${
+                  formik.errors.password && formik.touched.password
+                    ? "is-invalid"
+                    : ""
+                }`}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.password}
+                placeholder="Enter your password"
+              />
+              <i
+                className={`fas ${
+                  showPassword ? "fa-eye-slash" : "fa-eye"
+                } password-toggle`}
+                onClick={() => setShowPassword(!showPassword)}
+              ></i>
+            </div>
             {formik.errors.password && formik.touched.password && (
-              <div className="invalid-feedback">{formik.errors.password}</div>
+              <div className="error-message">{formik.errors.password}</div>
             )}
           </div>
-          {errMsg && <div className="alert alert-danger text-center">{errMsg}</div>}
-          <button type="submit" className="btn btn-primary w-100">
-            {isLoading ? "Loading..." : "Login"}
+
+          <div className="form-options">
+            <Link to="/forgot-password" className="forgot-password">
+              Forgot Password?
+            </Link>
+          </div>
+
+          {errMsg && <div className="alert alert-danger">{errMsg}</div>}
+
+          <button type="submit" className="login-button" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <i className="fas fa-spinner fa-spin"></i>
+                Signing in...
+              </>
+            ) : (
+              "Sign In"
+            )}
           </button>
         </form>
-        <div className="text-center mt-3">
-          <Link to="/register" className="text-decoration-none">
-            Don't have an account? <span className="text-primary">Register here</span>
-          </Link>
+
+        <div className="login-footer">
+          <p>
+            Don't have an account?{" "}
+            <Link to="/register" className="register-link">
+              Create Account
+            </Link>
+          </p>
         </div>
       </div>
     </div>
